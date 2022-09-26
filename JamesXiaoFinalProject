@@ -1,0 +1,154 @@
+# import the turtle/drawer of the game 
+import turtle as trtl
+import time
+Drawer = trtl.Turtle()
+wn = trtl.Screen()
+
+# set up the game settings
+wn.setup(width = 600, height = 600)
+Drawer.speed(0)
+Drawer.fillcolor("white")
+Drawer.shapesize(5)
+Drawer.penup()
+Drawer.goto(0,150)
+Drawer.pendown()
+Drawer.write("Tic-Tac-Toe", align = "center", font=("Helvetica", 60)) # CREDIT: Collaborative classmate gave tip for game name to look better and center words
+
+# create lists
+number_boxes = [1,2,3,4,5,6,7,8,9] 
+xcor_list = [] 
+ycor_list = []
+background_board = [["","",""],["","",""],["","",""]] # create a background board not seen to check for any wins
+
+# create a function to create the board for the game
+def draw_board(x,y):
+  adder = 0
+  Drawer.shape("square")
+  for count in range(3):
+    Drawer.penup()
+    Drawer.goto(x + adder,y)
+    Drawer.pendown()
+    Drawer.stamp()
+    adder = adder + 100
+
+draw_board(-100,100)
+draw_board(-100,0)
+draw_board(-100,-100)
+
+# create a function to number all of the boxes for the user to choose
+adder = 0
+def create_numbers(listvalue,x,y):
+  global adder
+  maximum_value = 2
+  if listvalue == 3: # check to see if the value is 3, then make the maximum value 5
+    maximum_value = 5
+  elif listvalue == 6: # check to see if the value is 6, then make the maximum value 8
+    maximum_value = 8
+  while listvalue <= maximum_value: # put in all the numbers in the corresponding boxes
+    Drawer.penup()
+    Drawer.goto(x+adder,y)
+    Drawer.pendown()
+    Drawer.write(number_boxes[listvalue], font = ("Arial", 20)) 
+    new_xcor = Drawer.xcor() # save the number of the x-coordinate to be used later
+    xcor_list.append(new_xcor)
+    new_ycor = Drawer.ycor() # save the number of the y-coordinate to be used later
+    ycor_list.append(new_ycor)
+    adder = adder + 100
+    listvalue = listvalue + 1
+Drawer.hideturtle()
+
+create_numbers(0,-140,60) # call on the function for the first section
+create_numbers(3,-440,-45)
+create_numbers(6,-740,-145) 
+
+# create a function to alternate between O and X for each turn
+constant_number = 1 # CREDIT: Didn't know why code wasn't working as needed so collaborative classmate helped debug by adding this line here
+def draw_shape(x,y):
+  global constant_number 
+  global shape # CREDIT: Didn't know why code wasn't working as needed so collaborative classmate helped debug by adding this line here
+  shape = ""
+  Drawer.penup()
+  Drawer.goto(x,y)
+  Drawer.pendown()
+  if (constant_number % 2 == 0):
+    shape = "X"
+    Drawer.write(shape, font = ("Arial", 75)) 
+    constant_number += 1
+  else:
+    shape = "O"
+    Drawer.write(shape, font = ("Arial", 75)) 
+    constant_number += 1
+
+# create a function to print the result after the game is done
+def print_result():
+  Drawer.penup()
+  Drawer.goto(0,-240)
+  Drawer.pendown()
+  Drawer.write("winner: " + shape, align = "center", font=("Arial", 60))
+  time.sleep(4)
+  exit("Game Over")
+  
+# create a function to check if there is any three in a row in the game and end the game after
+def check_win():
+  if background_board[0][0] == "O" and background_board[0][1] == "O" and background_board[0][2] == "O" or background_board[0][0] == "X" and background_board[0][1] == "X" and background_board[0][2] == "X":
+    print_result()
+  elif background_board[1][0] == "O" and background_board[1][1] == "O" and background_board[1][2] == "O" or background_board[1][0] == "X" and background_board[1][1] == "X" and background_board[1][2] == "X":
+    print_result()
+  elif background_board[2][0] == "O" and background_board[2][1] == "O" and background_board[2][2] == "O" or background_board[2][0] == "X" and background_board[2][1] == "X" and background_board[2][2] == "X":
+    print_result()
+  elif background_board[0][0] == "O" and background_board[1][0] == "O" and background_board[2][0] == "O" or background_board[0][0] == "X" and background_board[1][0] == "X" and background_board[2][0] == "X":
+    print_result()
+  elif background_board[0][1] == "O" and background_board[1][1] == "O" and background_board[2][1] == "O" or background_board[0][1] == "X" and background_board[1][1] == "X" and background_board[2][1] == "X":
+    print_result()
+  elif background_board[0][2] == "O" and background_board[1][2] == "O" and background_board[2][2] == "O" or background_board[0][2] == "X" and background_board[1][2] == "X" and background_board[2][2] == "X":
+    print_result()
+  elif background_board[0][0] == "O" and background_board[1][1] == "O" and background_board[2][2] == "O" or background_board[0][0] == "X" and background_board[1][1] == "X" and background_board[2][2] == "X":
+    print_result()
+  elif background_board[0][2] == "O" and background_board[1][1] == "O" and background_board[2][0] == "O" or background_board[0][2] == "X" and background_board[1][1] == "X" and background_board[2][0] == "X":
+    print_result()
+  elif "" not in background_board[0] and "" not in background_board[1] and "" not in background_board[2]: # check if there is a tie in the game
+    Drawer.penup()
+    Drawer.goto(0,-240)
+    Drawer.pendown()
+    Drawer.write("Tie", align = "center", font=("Arial", 60))  
+    time.sleep(4)
+    exit("Game Over")
+
+# create function to print out an X and an O and check for a game win    
+def control_shapes(n1,n2,n3):
+  if background_board[n2][n3] != "X" and background_board[n2][n3] != "O":  # Credit: Collaborative partner debug by giving ideas to replace this line to get rid of error that sometimes occur
+    draw_shape(xcor_list[n1],ycor_list[n1])
+    background_board[n2][n3] = shape # add the same shape to the background_board to check for win
+    check_win()
+
+# create functions for each keyboard number between 1 - 9 to print shape there
+def change_shapes1():
+  control_shapes(0,0,0)
+def change_shapes2():
+  control_shapes(1,0,1)
+def change_shapes3():
+  control_shapes(2,0,2)
+def change_shapes4():
+  control_shapes(3,1,0)
+def change_shapes5():
+  control_shapes(4,1,1)
+def change_shapes6():
+  control_shapes(5,1,2)
+def change_shapes7():
+  control_shapes(6,2,0)
+def change_shapes8():
+  control_shapes(7,2,1)
+def change_shapes9():
+  control_shapes(8,2,2)
+
+wn.onkey(change_shapes1, "1")
+wn.onkey(change_shapes2, "2")
+wn.onkey(change_shapes3, "3")
+wn.onkey(change_shapes4, "4")
+wn.onkey(change_shapes5, "5")
+wn.onkey(change_shapes6, "6")
+wn.onkey(change_shapes7, "7")
+wn.onkey(change_shapes8, "8")
+wn.onkey(change_shapes9, "9")
+wn.listen() # keep the screen up
+wn.mainloop()
